@@ -18,10 +18,7 @@ function resolveReference(name: string) {
 	] as const;
 }
 
-function findFormattingInArguments(
-	methodArguments: IBotApi.IArgument[],
-	argumentName?: string,
-) {
+function findFormattingInArguments(methodArguments: IBotApi.IArgument[]) {
 	const paths: {
 		text?: string;
 		entities?: string;
@@ -65,7 +62,7 @@ function findFormattingInArguments(
 
 		if (argument.array)
 			paths.push(
-				...findFormattingInArguments([argument.array], argument.name).map(
+				...findFormattingInArguments([argument.array]).map(
 					(x) =>
 						({
 							...x,
