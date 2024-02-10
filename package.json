@@ -1,0 +1,20 @@
+{
+    "name": "@gramio/format",
+    "main": "dist/index.js",
+    "type": "commonjs",
+    "scripts": {
+        "generate": "bun scripts/generate.ts",
+        "lint": "bunx @biomejs/biome check ./src",
+        "lint:fix": "bun lint --apply"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.5.3",
+        "@gramio/types": "^7.0.16",
+        "@types/bun": "latest",
+        "prettier": "^3.2.5",
+        "typescript": "^5.0.0"
+    },
+    "files": [
+        "dist"
+    ]
+}
