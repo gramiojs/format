@@ -1,8 +1,20 @@
 {
     "name": "@gramio/format",
-    "main": "dist/index.js",
+    "version": "0.0.1",
+    "description": "WIP",
+    "keywords": [
+        "gramio",
+        "telegram",
+        "bot",
+        "formatting",
+        "markdown",
+        "html",
+        "markdownV2"
+    ],
+    "main": "./dist/index.js",
     "type": "commonjs",
     "scripts": {
+        "prepublishOnly": "tsc",
         "generate": "bun scripts/generate.ts",
         "lint": "bunx @biomejs/biome check ./src",
         "lint:fix": "bun lint --apply"
