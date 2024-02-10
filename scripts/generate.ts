@@ -100,16 +100,17 @@ function mutateLogic(
 	if (argument.text === "message_text" && argument.property === "result")
 		return `if (
 		"input_message_content" in params.result &&
-		params.result.input_message_content !== undefined &&
-		"message_text" in params.result.input_message_content
+		params.result.input_message_content !== undefined && 
+		"message_text" in params.result.input_message_content &&
+		params.result.input_message_content.message_text instanceof FormattableString
 	)
 		params.result.input_message_content.entities = [];`;
 	if (!argument.type && !argument.property)
-		return `if("${argument.text}" in params) params.${argument.entities} = [];`;
+		return `if(params.${argument.text} instanceof FormattableString) params.${argument.entities} = [];`;
 	if (!argument.type || argument.type === "union")
-		return `if(params.${argument.property} !== undefined && "${argument.text}" in params.${argument.property}) params.${argument.property}.${argument.entities} = [];`;
+		return `if(params.${argument.property} !== undefined && "${argument.text}" in params.${argument.property} && params.${argument.property}.${argument.text} instanceof FormattableString) params.${argument.property}.${argument.entities} = [];`;
 	if (argument.type === "array")
-		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => ({...x, ${argument.text}: "", ${argument.entities}: []}))`;
+		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => (x.${argument.text} instanceof FormattableString ? {...x, ${argument.text}: "", ${argument.entities}: []} : x))`;
 	if (argument.type === "union-array")
 		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => ("${argument.text}" in x ? {...x, ${argument.text}: "", ${argument.entities}: []} : x))`;
 }
@@ -118,6 +119,7 @@ fs.writeFile(
 	"./src/formats.ts",
 	await prettier.format(
 		/* ts */ `import { ApiMethods } from "@gramio/types";
+		import { FormattableString } from "./index";
 
     type FormattedMethods = {
         [Method in keyof ApiMethods]?: (params: (NonNullable<
