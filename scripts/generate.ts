@@ -103,16 +103,24 @@ function mutateLogic(
 		params.result.input_message_content !== undefined && 
 		"message_text" in params.result.input_message_content &&
 		params.result.input_message_content.message_text instanceof FormattableString
-	)
-		params.result.input_message_content.entities = [];`;
+	) {
+		params.result.input_message_content.entities = params.result.input_message_content.message_text.entities; 
+		params.result.input_message_content.message_text = params.result.input_message_content.message_text.text;
+	}`;
 	if (!argument.type && !argument.property)
-		return `if(params.${argument.text} instanceof FormattableString) params.${argument.entities} = [];`;
+		return `if(params.${argument.text} instanceof FormattableString) {
+	params.${argument.entities} = params.${argument.text}.entities;
+	params.${argument.text} = params.${argument.text}.text;
+}`;
 	if (!argument.type || argument.type === "union")
-		return `if(params.${argument.property} !== undefined && "${argument.text}" in params.${argument.property} && params.${argument.property}.${argument.text} instanceof FormattableString) params.${argument.property}.${argument.entities} = [];`;
+		return `if(params.${argument.property} !== undefined && "${argument.text}" in params.${argument.property} && params.${argument.property}.${argument.text} instanceof FormattableString) {
+	params.${argument.property}.${argument.entities} = params.${argument.property}.${argument.text}.entities;
+	params.${argument.property}.${argument.text} = params.${argument.property}.${argument.text}.text;
+		}`;
 	if (argument.type === "array")
-		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => (x.${argument.text} instanceof FormattableString ? {...x, ${argument.text}: "", ${argument.entities}: []} : x))`;
+		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => (x.${argument.text} instanceof FormattableString ? {...x, ${argument.text}: x.${argument.text}.text, ${argument.entities}: x.${argument.text}.entities} : x))`;
 	if (argument.type === "union-array")
-		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => ("${argument.text}" in x ? {...x, ${argument.text}: "", ${argument.entities}: []} : x))`;
+		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => ("${argument.text}" in x && x.${argument.text} instanceof FormattableString ? {...x, ${argument.entities}: x.${argument.text}.entities} : x))`;
 }
 console.log(methods);
 fs.writeFile(
@@ -121,7 +129,7 @@ fs.writeFile(
 		/* ts */ `import { ApiMethods } from "@gramio/types";
 		import { FormattableString } from "./index";
 
-    type FormattedMethods = {
+    type FormattableMethods = {
         [Method in keyof ApiMethods]?: (params: (NonNullable<
             Parameters<ApiMethods[Method]>[0]
         >)) => (NonNullable<
@@ -130,7 +138,7 @@ fs.writeFile(
     };
 
     /** @codegenerated */
-    export const FormattingMap: FormattedMethods = {
+    export const FormattableMap: FormattableMethods = {
 		${Object.entries(methods)
 			.map(([key, value]) => {
 				return `${key}: (params) => {${value
