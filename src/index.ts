@@ -4,6 +4,8 @@ import {
 	TelegramUser,
 } from "@gramio/types";
 
+export * from "./formats";
+
 export interface Stringable {
 	toString(): string;
 }
@@ -102,8 +104,6 @@ export function format(
 
 	for (let index = 0; index < length; index++) {
 		for (const str of [stringParts[index], strings[index]]) {
-			if (str) text += str.toString();
-
 			if (str instanceof FormattableString)
 				entities.push(
 					...str.entities.map((e) => ({
@@ -111,6 +111,8 @@ export function format(
 						offset: e.offset + text.length,
 					})),
 				);
+
+			if (str) text += str.toString();
 		}
 	}
 
