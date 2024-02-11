@@ -95,7 +95,7 @@ export const italic = buildFormatter("italic");
  */
 export const underline = buildFormatter("underline");
 
-/** Format text as ~strikethrough~. Cannot be combined with `code` and `pre`.
+/** Format text as ~~strikethrough~~. Cannot be combined with `code` and `pre`.
  * @example
  * ```ts
  * strikethrough`test`
@@ -180,19 +180,7 @@ export const customEmoji = buildFormatter<[custom_emoji_id: string]>(
 );
 
 // [INFO] Thanks https://github.com/grammyjs/parse-mode/blob/49ba35bac208536edfa6e8d4ea665ea0f7fff522/src/format.ts#L213
-/** Template literal that helps construct message entities for text formatting
- * @example
- * ```ts
- * bot.api.sendMessage({
- *      chat_id: 12321,
- *      text: format`${bold`Hi!`} Can ${italic(`you`)} help ${spoiler`me`}? Can you give me a ${link("star", "https://github.com/gramiojs/gramio")}?`
- * })
- * ```
- */
-export function format(
-	stringParts: TemplateStringsArray,
-	...strings: Stringable[]
-) {
+function processRawFormat(stringParts: string[], strings: Stringable[]) {
 	const entities: TelegramMessageEntity[] = [];
 	let text = "";
 
@@ -213,4 +201,48 @@ export function format(
 	}
 
 	return new FormattableString(text, entities);
+}
+
+/** Template literal that helps construct message entities for text formatting.
+ *
+ *  Use if you want to strip all of the indentation from the beginning of each line.
+ * @example
+ * ```ts
+ * bot.api.sendMessage({
+ *      chat_id: 12321,
+ *      text: format`${bold`Hi!`}
+ *          Can ${italic(`you`)} help ${spoiler`me`}?
+ *              Can you give me a ${link("star", "https://github.com/gramiojs/gramio")}?`
+ * })
+ * ```
+ */
+export function format(
+	stringParts: TemplateStringsArray,
+	...strings: Stringable[]
+) {
+	console.log(stringParts);
+	return processRawFormat(
+		stringParts.map((x) => x.replace(/(?!\n\s\n)\n(?!\n)\s+/g, "\n")),
+		strings,
+	);
+}
+
+/** Template literal that helps construct message entities for text formatting.
+ *
+ *  Use if you want to save all of the indentation.
+ * @example
+ * ```ts
+ * bot.api.sendMessage({
+ *      chat_id: 12321,
+ *      text: format`${bold`Hi!`}
+ *          Can ${italic(`you`)} help ${spoiler`me`}?
+ *              Can you give me a ${link("star", "https://github.com/gramiojs/gramio")}?`
+ * })
+ * ```
+ */
+export function formatSaveIndents(
+	stringParts: TemplateStringsArray,
+	...strings: Stringable[]
+) {
+	return processRawFormat([...stringParts], strings);
 }
