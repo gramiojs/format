@@ -24,6 +24,10 @@ export class FormattableString implements Stringable {
 		return this.text;
 	}
 
+	toJSON() {
+		return this.text;
+	}
+
 	// ![INFO] - https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html#instanceof-narrowing-through-symbolhasinstance
 	static [Symbol.hasInstance](value: unknown): value is FormattableString {
 		return (
