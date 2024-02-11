@@ -121,12 +121,8 @@ export const blockquote = buildFormatter("blockquote");
 /** Format text as `code`. Cannot be combined with any other format.
  * @example
  * ```ts
- * pre`test`
- * format`test ${pre(`console.log("GramIO")`, "js"}`
- * ```
- * pre with language result is
- * ```js
- * console.log("GramIO")
+ * code`test`
+ * format`test ${code("copy it")}`
  * ```
  */
 export const code = buildFormatter("code");
@@ -134,8 +130,12 @@ export const code = buildFormatter("code");
 /** Format text as ```pre```. Cannot be combined with any other format.
  * @example
  * ```ts
- * code`test`
- * format`test ${code("GramIO")}`
+ * pre`test`
+ * format`test ${pre(`console.log("GramIO")`, "js")}`
+ * ```
+ * pre with language result is
+ * ```js
+ * console.log("GramIO")
  * ```
  */
 export const pre = buildFormatter<[language?: string]>("pre", "language");
@@ -168,6 +168,7 @@ export const mention = buildFormatter<[user: TelegramUser]>(
  * customEmoji("⚔️", "5222106016283378623")
  * format`test ${customEmoji("⚔️", "5222106016283378623")}`
  * ```
+ * **NOTE**: Custom emoji entities can only be used by bots that purchased additional usernames on [Fragment](https://fragment.com/).
  */
 export const customEmoji = buildFormatter<[custom_emoji_id: string]>(
 	"custom_emoji",
