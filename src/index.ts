@@ -141,6 +141,7 @@ export const code = buildFormatter("code");
  * ```js
  * console.log("GramIO")
  * ```
+ * [Supported languages](https://github.com/TelegramMessenger/libprisma#supported-languages)
  */
 export const pre = buildFormatter<[language?: string]>("pre", "language");
 
@@ -220,9 +221,8 @@ export function format(
 	stringParts: TemplateStringsArray,
 	...strings: Stringable[]
 ) {
-	console.log(stringParts);
 	return processRawFormat(
-		stringParts.map((x) => x.replace(/(?!\n\s\n)\n(?!\n)\s+/g, "\n")),
+		stringParts.map((x) => x.replace(/(?!\n\s+\n)\n(?!\n)\s+/g, "\n")),
 		strings,
 	);
 }
