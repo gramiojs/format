@@ -124,7 +124,7 @@ function mutateLogic(
 }
 console.log(methods);
 fs.writeFile(
-	"./src/formats.ts",
+	"./src/mutator.ts",
 	await prettier.format(
 		/* ts */ `import { ApiMethods } from "@gramio/types";
 		import { FormattableString } from "./index";
