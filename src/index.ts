@@ -4,7 +4,7 @@ import {
 	TelegramUser,
 } from "@gramio/types";
 
-export * from "./formats";
+export * from "./mutator";
 
 export interface Stringable {
 	toString(): string;
@@ -180,6 +180,61 @@ export const customEmoji = buildFormatter<[custom_emoji_id: string]>(
 	"custom_emoji_id",
 );
 
+/** Helper for great work with formattable arrays. ([].join break styling)
+ * Separator by default is `, `
+ * @example
+ * ```ts
+ * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
+ * ```
+ */
+export function join<T>(
+	array: T[],
+	iterator: (item: T, index: number) => Stringable | false | undefined | null,
+	separator = ", ",
+) {
+	let text = "";
+	const entities: TelegramMessageEntity[] = [];
+
+	for (const [index, str] of array.map(iterator).entries()) {
+		if (str instanceof FormattableString)
+			entities.push(
+				...str.entities.map((e) => ({
+					...e,
+					offset: e.offset + text.length,
+				})),
+			);
+		if (str)
+			text += str.toString() + (index === array.length - 1 ? "" : separator);
+	}
+
+	return new FormattableString(text, entities);
+}
+
+function processDeeperFormat(offset: number, strings: Stringable[]) {
+	let text = "";
+	const entities: TelegramMessageEntity[] = [];
+
+	for (const str of strings) {
+		if (Array.isArray(str)) {
+			const [newText, newEntities] = processDeeperFormat(text.length, str);
+
+			text += newText;
+			entities.push(...newEntities);
+			continue;
+		}
+		if (str instanceof FormattableString)
+			entities.push(
+				...str.entities.map((e) => ({
+					...e,
+					offset: e.offset + text.length + offset,
+				})),
+			);
+		text += str.toString();
+	}
+
+	return [text, entities] as const;
+}
+
 // [INFO] Thanks https://github.com/grammyjs/parse-mode/blob/49ba35bac208536edfa6e8d4ea665ea0f7fff522/src/format.ts#L213
 function processRawFormat(stringParts: string[], strings: Stringable[]) {
 	const entities: TelegramMessageEntity[] = [];
@@ -189,6 +244,13 @@ function processRawFormat(stringParts: string[], strings: Stringable[]) {
 
 	for (let index = 0; index < length; index++) {
 		for (const str of [stringParts[index], strings[index]]) {
+			if (Array.isArray(str)) {
+				const [newText, newEntities] = processDeeperFormat(text.length, str);
+
+				text += newText;
+				entities.push(...newEntities);
+				continue;
+			}
 			if (str instanceof FormattableString)
 				entities.push(
 					...str.entities.map((e) => ({
@@ -207,6 +269,12 @@ function processRawFormat(stringParts: string[], strings: Stringable[]) {
 /** Template literal that helps construct message entities for text formatting.
  *
  *  Use if you want to strip all of the indentation from the beginning of each line.
+ *
+ * **NOTE**: for **arrays** use `join` helper -
+ * ```ts
+ * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
+ * ```
+ *
  * @example
  * ```ts
  * bot.api.sendMessage({
@@ -230,6 +298,12 @@ export function format(
 /** Template literal that helps construct message entities for text formatting.
  *
  *  Use if you want to save all of the indentation.
+ *
+ *  **NOTE**: for **arrays** use `join` helper -
+ * ```ts
+ * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
+ * ```
+ *
  * @example
  * ```ts
  * bot.api.sendMessage({
