@@ -181,7 +181,7 @@ export const customEmoji = buildFormatter<[custom_emoji_id: string]>(
 );
 
 /** Helper for great work with formattable arrays. ([].join break styling)
- * Separator by default is `, `
+ *  Separator by default is `, `
  * @example
  * ```ts
  * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
@@ -270,7 +270,7 @@ function processRawFormat(stringParts: string[], strings: Stringable[]) {
  *
  *  Use if you want to strip all of the indentation from the beginning of each line.
  *
- * **NOTE**: for **arrays** use `join` helper -
+ * **NOTE**: for format with **arrays** use it with `join` helper -
  * ```ts
  * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
  * ```
@@ -299,7 +299,7 @@ export function format(
  *
  *  Use if you want to save all of the indentation.
  *
- *  **NOTE**: for **arrays** use `join` helper -
+ *  **NOTE**: for format with **arrays** use it with `join` helper -
  * ```ts
  * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
  * ```

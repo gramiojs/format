@@ -1,6 +1,6 @@
 {
     "name": "@gramio/format",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Library for formatting text for Telegram Bot API",
     "homepage": "https://gramio.netlify.app/formatting.html",
     "repository": {
@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "1.5.3",
-        "@gramio/types": "^7.0.17",
+        "@gramio/types": "^7.1.2",
         "@types/bun": "latest",
         "prettier": "^3.2.5",
         "typescript": "^5.3.3"

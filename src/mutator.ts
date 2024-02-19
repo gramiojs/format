@@ -1,10 +1,10 @@
-import { ApiMethods } from "@gramio/types";
+import { APIMethodParams, APIMethods } from "@gramio/types";
 import { FormattableString } from "./index";
 
 type FormattableMethods = {
-	[Method in keyof ApiMethods]?: (
-		params: NonNullable<Parameters<ApiMethods[Method]>[0]>,
-	) => NonNullable<Parameters<ApiMethods[Method]>[0]>;
+	[Method in keyof APIMethods]?: (
+		params: NonNullable<APIMethodParams<Method>>,
+	) => NonNullable<APIMethodParams<Method>>;
 };
 
 /** @codegenerated */

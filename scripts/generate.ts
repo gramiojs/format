@@ -126,14 +126,14 @@ console.log(methods);
 fs.writeFile(
 	"./src/mutator.ts",
 	await prettier.format(
-		/* ts */ `import { ApiMethods } from "@gramio/types";
+		/* ts */ `import { APIMethods, APIMethodParams } from "@gramio/types";
 		import { FormattableString } from "./index";
 
     type FormattableMethods = {
-        [Method in keyof ApiMethods]?: (params: (NonNullable<
-            Parameters<ApiMethods[Method]>[0]
+        [Method in keyof APIMethods]?: (params: (NonNullable<
+            APIMethodParams<Method>
         >)) => (NonNullable<
-            Parameters<ApiMethods[Method]>[0]
+			APIMethodParams<Method>
         >);
     };
 
