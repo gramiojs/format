@@ -1,4 +1,4 @@
-import { APIMethodParams, APIMethods } from "@gramio/types";
+import type { APIMethodParams, APIMethods } from "@gramio/types";
 import { FormattableString } from "./index";
 
 type FormattableMethods = {
@@ -198,6 +198,10 @@ export const FormattableMap: FormattableMethods = {
 		return params;
 	},
 	sendPoll: (params) => {
+		if (params.question instanceof FormattableString) {
+			params.question_entities = params.question.entities;
+			params.question = params.question.text;
+		}
 		if (params.explanation instanceof FormattableString) {
 			params.explanation_entities = params.explanation.entities;
 			params.explanation = params.explanation.text;
@@ -211,6 +215,13 @@ export const FormattableMap: FormattableMethods = {
 				params.reply_parameters.quote.entities;
 			params.reply_parameters.quote = params.reply_parameters.quote.text;
 		}
+		if (params.options.length)
+			params.options.map((x) =>
+				"text" in x && x.text instanceof FormattableString
+					? { ...x, text_entities: x.text.entities }
+					: x,
+			);
+
 		return params;
 	},
 	sendDice: (params) => {

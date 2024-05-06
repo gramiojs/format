@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import prettier from "prettier";
-import { IBotApi } from "./types";
+import type { IBotApi } from "./types";
 
 const SCHEMA_FILE_PATH = "./tg-bot-api/public/dev/custom.min.json";
 
@@ -19,6 +19,7 @@ function resolveReference(name: string) {
 }
 
 function findFormattingInArguments(methodArguments: IBotApi.IArgument[]) {
+	throw Error("TODO: fix undefined's");
 	const paths: {
 		text?: string;
 		entities?: string;
@@ -29,14 +30,18 @@ function findFormattingInArguments(methodArguments: IBotApi.IArgument[]) {
 		methodArguments.some(
 			(x) =>
 				x.description?.includes("after entities parsing") ||
-				x.name === "message_text",
+				x.name === "message_text" ||
+				x.name === "text" ||
+				x.name === "question",
 		)
 	)
 		paths.push({});
 
 	for (const argument of methodArguments) {
-		if (argument.array?.reference === "MessageEntity")
+		if (argument.array?.reference === "MessageEntity") {
+			console.log(argument, paths);
 			paths[0].entities = argument.name;
+		}
 
 		if (
 			argument?.description?.includes("after entities parsing") ||
