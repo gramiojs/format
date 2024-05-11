@@ -27,10 +27,12 @@
     },
     "devDependencies": {
         "@biomejs/biome": "1.7.3",
-        "@gramio/types": "^7.3.2",
         "@types/bun": "latest",
         "prettier": "^3.2.5",
         "typescript": "^5.4.5"
+    },
+    "dependencies": {
+        "@gramio/types": "^7.3.4"
     },
     "files": [
         "dist"
