@@ -4,6 +4,7 @@ on: workflow_dispatch
 
 permissions:
     contents: write
+    id-token: write
 
 jobs:
     publish_package:
@@ -24,6 +25,15 @@ jobs:
 
             - name: Install modules
               run: bun install
+
+            - name: Prepare to JSR publish
+              run: bun jsr
+
+            - name: Type-check
+              run: tsc --noEmit
+
+            - name: Publish package to JSR
+              run: bunx jsr publish --allow-dirty
 
             - name: Install Node
               uses: actions/setup-node@v4

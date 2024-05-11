@@ -22,7 +22,8 @@
         "prepublishOnly": "tsc",
         "generate": "bun scripts/generate.ts",
         "lint": "bunx @biomejs/biome check ./src",
-        "lint:fix": "bun lint --apply"
+        "lint:fix": "bun lint --apply",
+        "jsr": "bun scripts/release-jsr.ts"
     },
     "devDependencies": {
         "@biomejs/biome": "1.7.3",
