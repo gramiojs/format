@@ -1,3 +1,9 @@
+/**
+ * @module
+ *
+ * Library for [formatting](https://core.telegram.org/bots/api#messageentity) text for Telegram Bot API
+ *
+ */
 import type {
 	TelegramMessageEntity,
 	TelegramMessageEntityType,
@@ -6,12 +12,15 @@ import type {
 
 export * from "./mutator";
 
-export interface Stringable {
-	toString(): string;
-}
+/** Type which contains a string or has the ability to result in a string object */
+export type Stringable =
+	| string
+	| {
+			toString(): string;
+	  };
 
-/** Class-helper for work with formattable entities */
-export class FormattableString implements Stringable {
+/** Class-helper for work with formattable [entities](https://core.telegram.org/bots/api#messageentity) */
+export class FormattableString {
 	text: string;
 	entities: TelegramMessageEntity[];
 
@@ -68,7 +77,8 @@ function buildFormatter<T extends unknown[] = never>(
 	};
 }
 
-/** Format text as **bold**. Cannot be combined with `code` and `pre`.
+/**
+ * Format text as **bold**. Cannot be combined with `code` and `pre`.
  * @example
  * ```ts
  * bold`test`
@@ -77,7 +87,8 @@ function buildFormatter<T extends unknown[] = never>(
  */
 export const bold = buildFormatter("bold");
 
-/** Format text as _italic_. Cannot be combined with `code` and `pre`.
+/**
+ * Format text as _italic_. Cannot be combined with `code` and `pre`.
  * @example
  * ```ts
  * italic`test`
@@ -86,7 +97,8 @@ export const bold = buildFormatter("bold");
  */
 export const italic = buildFormatter("italic");
 
-/** Format text as underline. Cannot be combined with `code` and `pre`.
+/**
+ * Format text as underline. Cannot be combined with `code` and `pre`.
  * @example
  * ```ts
  * underline`test`
@@ -95,7 +107,8 @@ export const italic = buildFormatter("italic");
  */
 export const underline = buildFormatter("underline");
 
-/** Format text as ~~strikethrough~~. Cannot be combined with `code` and `pre`.
+/**
+ * Format text as ~~strikethrough~~. Cannot be combined with `code` and `pre`.
  * @example
  * ```ts
  * strikethrough`test`
@@ -104,7 +117,8 @@ export const underline = buildFormatter("underline");
  */
 export const strikethrough = buildFormatter("strikethrough");
 
-/** Format text as spoiler. Cannot be combined with `code` and `pre`.
+/**
+ * Format text as spoiler. Cannot be combined with `code` and `pre`.
  * @example
  * ```ts
  * spoiler`test`
@@ -113,7 +127,8 @@ export const strikethrough = buildFormatter("strikethrough");
  */
 export const spoiler = buildFormatter("spoiler");
 
-/** Format text as blockquote. Cannot be nested.
+/**
+ * Format text as blockquote. Cannot be nested.
  * @example
  * ```ts
  * blockquote`test`
@@ -122,7 +137,8 @@ export const spoiler = buildFormatter("spoiler");
  */
 export const blockquote = buildFormatter("blockquote");
 
-/** Format text as `code`. Cannot be combined with any other format.
+/**
+ * Format text as `code`. Cannot be combined with any other format.
  * @example
  * ```ts
  * code`test`
@@ -131,7 +147,8 @@ export const blockquote = buildFormatter("blockquote");
  */
 export const code = buildFormatter("code");
 
-/** Format text as ```pre```. Cannot be combined with any other format.
+/**
+ * Format text as ```pre```. Cannot be combined with any other format.
  * @example
  * ```ts
  * pre`test`
@@ -145,7 +162,8 @@ export const code = buildFormatter("code");
  */
 export const pre = buildFormatter<[language?: string]>("pre", "language");
 
-/** Format text as [link](https://github.com/gramiojs/gramio). Cannot be combined with `code` and `pre`.
+/**
+ * Format text as [link](https://github.com/gramiojs/gramio). Cannot be combined with `code` and `pre`.
  * @example
  * ```ts
  * link("test", "https://...")
@@ -154,7 +172,8 @@ export const pre = buildFormatter<[language?: string]>("pre", "language");
  */
 export const link = buildFormatter<[url: string]>("text_link", "url");
 
-/** Format text as mention. Cannot be combined with `code` and `pre`.
+/**
+ * Format text as mention. Cannot be combined with `code` and `pre`.
  * @example
  * ```ts
  * mention("friend", { id: 228, is_bot: false, first_name: "GramIO"})
@@ -167,7 +186,8 @@ export const mention = buildFormatter<[user: TelegramUser]>(
 	"user",
 );
 
-/** Insert custom emoji by their id.
+/**
+ * Insert custom emoji by their id.
  * @example
  * ```ts
  * customEmoji("⚔️", "5222106016283378623")
@@ -180,8 +200,9 @@ export const customEmoji = buildFormatter<[custom_emoji_id: string]>(
 	"custom_emoji_id",
 );
 
-/** Helper for great work with formattable arrays. ([].join break styling)
- *  Separator by default is `, `
+/**
+ * Helper for great work with formattable arrays. ([].join break styling)
+ * Separator by default is `, `
  * @example
  * ```ts
  * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
@@ -266,11 +287,13 @@ function processRawFormat(stringParts: string[], strings: Stringable[]) {
 	return new FormattableString(text, entities);
 }
 
-/** Template literal that helps construct message entities for text formatting.
+/**
+ * [Template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
+ * that helps construct message [entities](https://core.telegram.org/bots/api#messageentity) for text formatting.
  *
  *  Use if you want to strip all of the indentation from the beginning of each line.
  *
- * **NOTE**: for format with **arrays** use it with `join` helper -
+ * **NOTE**: for format with **arrays** use it with {@link join} helper -
  * ```ts
  * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
  * ```
@@ -295,11 +318,13 @@ export function format(
 	);
 }
 
-/** Template literal that helps construct message entities for text formatting.
+/**
+ * [Template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
+ * that helps construct message [entities](https://core.telegram.org/bots/api#messageentity) for text formatting.
  *
  *  Use if you want to save all of the indentation.
  *
- *  **NOTE**: for format with **arrays** use it with `join` helper -
+ *  **NOTE**: for format with **arrays** use it with {@link join} helper -
  * ```ts
  * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
  * ```

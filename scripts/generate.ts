@@ -142,7 +142,12 @@ fs.writeFile(
         >);
     };
 
-    /** @codegenerated */
+    /** 
+	 * A set of methods that decompose the {@link FormattableString} into a string and 
+	 * an array of [entities](https://core.telegram.org/bots/api#messageentity) for further sending to the Telegram Bot API
+	 * 
+	 * @codegenerated 
+	 */
     export const FormattableMap: FormattableMethods = {
 		${Object.entries(methods)
 			.map(([key, value]) => {

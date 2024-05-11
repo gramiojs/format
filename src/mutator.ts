@@ -7,7 +7,12 @@ type FormattableMethods = {
 	) => NonNullable<APIMethodParams<Method>>;
 };
 
-/** @codegenerated */
+/**
+ * A set of methods that decompose the {@link FormattableString} into a string and
+ * an array of [entities](https://core.telegram.org/bots/api#messageentity) for further sending to the Telegram Bot API
+ *
+ * @codegenerated
+ */
 export const FormattableMap: FormattableMethods = {
 	sendMessage: (params) => {
 		if (params.text instanceof FormattableString) {
