@@ -83,7 +83,9 @@ function buildFormatter<T extends unknown[] = never>(
  * ```ts
  * bold`test`
  * format`test ${bold(italic("GramIO"))}`
+ * format`Format text as ${bold`bold`}`;
  * ```
+ * ![bold](https://gramio.netlify.app/formatting/bold.png)
  */
 export const bold = buildFormatter("bold");
 
@@ -93,7 +95,9 @@ export const bold = buildFormatter("bold");
  * ```ts
  * italic`test`
  * format`test ${italic(bold("GramIO"))}`
+ * format`Format text as ${italic`italic`}`;
  * ```
+ * ![italic](https://gramio.netlify.app/formatting/italic.png)
  */
 export const italic = buildFormatter("italic");
 
@@ -103,7 +107,9 @@ export const italic = buildFormatter("italic");
  * ```ts
  * underline`test`
  * format`test ${underline(bold("GramIO"))}`
+ * format`Format text as ${underline`underline`}`;
  * ```
+ * ![underline](https://gramio.netlify.app/formatting/underline.png)
  */
 export const underline = buildFormatter("underline");
 
@@ -113,7 +119,9 @@ export const underline = buildFormatter("underline");
  * ```ts
  * strikethrough`test`
  * format`test ${strikethrough(bold("GramIO"))}`
+ * format`Format text as ${strikethrough`strikethrough`}`;
  * ```
+ * ![](https://gramio.netlify.app/formatting/strikethrough.png)
  */
 export const strikethrough = buildFormatter("strikethrough");
 
@@ -123,7 +131,9 @@ export const strikethrough = buildFormatter("strikethrough");
  * ```ts
  * spoiler`test`
  * format`test ${spoiler(bold("GramIO"))}`
+ * format`Format text as ${spoiler`spoiler`}`;
  * ```
+ * ![spoiler](https://gramio.netlify.app/formatting/spoiler.png)
  */
 export const spoiler = buildFormatter("spoiler");
 
@@ -133,7 +143,9 @@ export const spoiler = buildFormatter("spoiler");
  * ```ts
  * blockquote`test`
  * format`test ${blockquote(bold("GramIO"))}`
+ * format`Format text as ${blockquote`blockquote`}`;
  * ```
+ * ![blockquote](https://gramio.netlify.app/formatting/blockquote.png)
  */
 export const blockquote = buildFormatter("blockquote");
 
@@ -143,7 +155,9 @@ export const blockquote = buildFormatter("blockquote");
  * ```ts
  * code`test`
  * format`test ${code("copy it")}`
+ * format`Format text as ${code`code`}`;
  * ```
+ * ![code](https://gramio.netlify.app/formatting/code.png)
  */
 export const code = buildFormatter("code");
 
@@ -159,6 +173,8 @@ export const code = buildFormatter("code");
  * console.log("GramIO")
  * ```
  * [Supported languages](https://github.com/TelegramMessenger/libprisma#supported-languages)
+ *
+ * ![pre](https://gramio.netlify.app/formatting/pre.png)
  */
 export const pre = buildFormatter<[language?: string]>("pre", "language");
 
@@ -168,7 +184,9 @@ export const pre = buildFormatter<[language?: string]>("pre", "language");
  * ```ts
  * link("test", "https://...")
  * format`test ${bold(link("GramIO", "https://github.com/gramiojs/gramio"))}`
+ * format`Format text as ${link("link", "https://github.com/gramiojs/gramio")}`;
  * ```
+ * ![link](https://gramio.netlify.app/formatting/link.png)
  */
 export const link = buildFormatter<[url: string]>("text_link", "url");
 
@@ -179,6 +197,7 @@ export const link = buildFormatter<[url: string]>("text_link", "url");
  * mention("friend", { id: 228, is_bot: false, first_name: "GramIO"})
  * format`test ${mention("friend", { id: 228, is_bot: false, first_name: "GramIO"})}`
  * ```
+ * ![mention](https://gramio.netlify.app/formatting/mention.png)
  */
 export const mention = buildFormatter<[user: TelegramUser]>(
 	"text_mention",
@@ -291,6 +310,8 @@ function processRawFormat(stringParts: string[], strings: Stringable[]) {
  * [Template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
  * that helps construct message [entities](https://core.telegram.org/bots/api#messageentity) for text formatting.
  *
+ * [Documentation](https://gramio.netlify.app/formatting/)
+ *
  *  Use if you want to strip all of the indentation from the beginning of each line.
  *
  * **NOTE**: for format with **arrays** use it with {@link join} helper -
@@ -307,6 +328,8 @@ function processRawFormat(stringParts: string[], strings: Stringable[]) {
  *              Can you give me a ${link("star", "https://github.com/gramiojs/gramio")}?`
  * })
  * ```
+ *
+ * ![format](https://gramio.netlify.app/formatting/format.png)
  */
 export function format(
 	stringParts: TemplateStringsArray,
@@ -321,6 +344,8 @@ export function format(
 /**
  * [Template literal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)
  * that helps construct message [entities](https://core.telegram.org/bots/api#messageentity) for text formatting.
+ *
+ *	[Documentation](https://gramio.netlify.app/formatting/)
  *
  *  Use if you want to save all of the indentation.
  *
@@ -338,6 +363,8 @@ export function format(
  *              Can you give me a ${link("star", "https://github.com/gramiojs/gramio")}?`
  * })
  * ```
+ *
+ * ![formatSaveIndents](https://gramio.netlify.app/formatting/format-save-indents.png)
  */
 export function formatSaveIndents(
 	stringParts: TemplateStringsArray,
