@@ -221,9 +221,9 @@ export const FormattableMap: FormattableMethods = {
 			params.reply_parameters.quote = params.reply_parameters.quote.text;
 		}
 		if (params.options.length)
-			params.options.map((x) =>
+			params.options = params.options.map((x) =>
 				"text" in x && x.text instanceof FormattableString
-					? { ...x, text_entities: x.text.entities }
+					? { ...x, text: x.text.text, text_entities: x.text.entities }
 					: x,
 			);
 
@@ -280,15 +280,23 @@ export const FormattableMap: FormattableMethods = {
 	},
 	answerInlineQuery: (params) => {
 		if (params.results?.length)
-			params.results.map((x) =>
+			params.results = params.results.map((x) =>
 				"caption" in x && x.caption instanceof FormattableString
-					? { ...x, caption_entities: x.caption.entities }
+					? {
+							...x,
+							caption: x.caption.text,
+							caption_entities: x.caption.entities,
+						}
 					: x,
 			);
 		if (params.results?.length)
-			params.results.map((x) =>
+			params.results = params.results.map((x) =>
 				"message_text" in x && x.message_text instanceof FormattableString
-					? { ...x, entities: x.message_text.entities }
+					? {
+							...x,
+							message_text: x.message_text.text,
+							entities: x.message_text.entities,
+						}
 					: x,
 			);
 		return params;

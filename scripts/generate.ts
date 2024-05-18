@@ -123,9 +123,9 @@ function mutateLogic(
 	params.${argument.property}.${argument.text} = params.${argument.property}.${argument.text}.text;
 		}`;
 	if (argument.type === "array")
-		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => (x.${argument.text} instanceof FormattableString ? {...x, ${argument.text}: x.${argument.text}.text, ${argument.entities}: x.${argument.text}.entities} : x))`;
+		return `if(params.${argument.property}?.length) params.${argument.property} = params.${argument.property}.map(x => (x.${argument.text} instanceof FormattableString ? {...x, ${argument.text}: x.${argument.text}.text, ${argument.entities}: x.${argument.text}.entities} : x))`;
 	if (argument.type === "union-array")
-		return `if(params.${argument.property}?.length) params.${argument.property}.map(x => ("${argument.text}" in x && x.${argument.text} instanceof FormattableString ? {...x, ${argument.entities}: x.${argument.text}.entities} : x))`;
+		return `if(params.${argument.property}?.length) params.${argument.property} = params.${argument.property}.map(x => ("${argument.text}" in x && x.${argument.text} instanceof FormattableString ? {...x, ${argument.text}: x.${argument.text}.text, ${argument.entities}: x.${argument.text}.entities} : x))`;
 }
 console.log(methods);
 fs.writeFile(
