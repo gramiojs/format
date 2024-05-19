@@ -29,6 +29,10 @@ export class FormattableString {
 		this.entities = entities;
 	}
 
+	static from(text: string, entities: TelegramMessageEntity[]) {
+		return new FormattableString(text, entities);
+	}
+
 	toString() {
 		return this.text;
 	}
