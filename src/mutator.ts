@@ -164,6 +164,19 @@ export const FormattableMap: FormattableMethods = {
 				params.reply_parameters.quote.entities;
 			params.reply_parameters.quote = params.reply_parameters.quote.text;
 		}
+
+		// TODO: TEMPORAL FIX FIND ISSUE
+		if (params.media.length)
+			params.media = params.media.map((x) =>
+				"caption" in x && x.caption instanceof FormattableString
+					? {
+							...x,
+							caption: x.caption.text,
+							caption_entities: x.caption.entities,
+						}
+					: x,
+			);
+
 		return params;
 	},
 	sendLocation: (params) => {
