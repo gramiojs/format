@@ -158,6 +158,18 @@ export const spoiler = buildFormatter("spoiler");
 export const blockquote = buildFormatter("blockquote");
 
 /**
+ * Format text as expandable blockquote. Cannot be nested.
+ * @example
+ * ```ts
+ * blockquote`test`
+ * format`test ${expandableBlockquote(bold("GramIO"))}`
+ * format`Format text as ${expandableBlockquote`blockquote`}`;
+ * ```
+ * ![blockquote](https://gramio.dev/formatting/expandable_blockquote.png)
+ */
+export const expandableBlockquote = buildFormatter("expandable_blockquote");
+
+/**
  * Format text as `code`. Cannot be combined with any other format.
  * @example
  * ```ts
