@@ -1,16 +1,11 @@
 {
-    "name": "@gramio/format",
-    "version": "0.0.9",
-    "exports": "./src/index.ts",
-    "publish": {
-        "include": [
-            "deno.json",
-            "src",
-            "README.md",
-            "tsconfig.json"
-        ]
-    },
-    "imports": {
-        "@gramio/types": "jsr:@gramio/types@^7.3.4"
-    }
+	"name": "@gramio/format",
+	"version": "0.0.9",
+	"exports": "./src/index.ts",
+	"publish": {
+		"include": ["deno.json", "src", "README.md", "LICENSE"]
+	},
+	"imports": {
+		"@gramio/types": "jsr:@gramio/types@^7.3.4"
+	}
 }
