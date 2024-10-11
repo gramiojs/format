@@ -1,5 +1,5 @@
 import type { APIMethodParams, APIMethods } from "@gramio/types";
-import { FormattableString } from "./index";
+import { FormattableString } from "./formattable-string.js";
 
 type FormattableMethods = {
 	[Method in keyof APIMethods]?: (
