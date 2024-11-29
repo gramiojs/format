@@ -1,11 +1,11 @@
 {
 	"name": "@gramio/format",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "Library for formatting text for Telegram Bot API",
 	"homepage": "https://gramio.dev/formatting.html",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/gramiojs/format"
+		"url": "git+https://github.com/gramiojs/format.git"
 	},
 	"keywords": [
 		"gramio",
@@ -38,14 +38,14 @@
 		"jsr": "bun scripts/release-jsr.ts"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.7.3",
+		"@biomejs/biome": "^1.9.4",
 		"@types/bun": "latest",
-		"pkgroll": "2.1.0",
-		"prettier": "^3.2.5",
-		"typescript": "^5.4.5"
+		"pkgroll": "^2.5.1",
+		"prettier": "^3.4.1",
+		"typescript": "^5.7.2"
 	},
 	"dependencies": {
-		"@gramio/types": "^7.4.0"
+		"@gramio/types": "^8.0.6"
 	},
 	"license": "MIT",
 	"files": ["dist"]

@@ -291,6 +291,7 @@ export const FormattableMap: FormattableMethods = {
 		}
 		return params;
 	},
+	// TODO: fix
 	answerInlineQuery: (params) => {
 		if (params.results?.length)
 			params.results = params.results.map((x) =>
@@ -302,16 +303,51 @@ export const FormattableMap: FormattableMethods = {
 						}
 					: x,
 			);
+		// TODO: fix this in generator
 		if (params.results?.length)
 			params.results = params.results.map((x) =>
-				"message_text" in x && x.message_text instanceof FormattableString
+				"input_message_content" in x &&
+				x.input_message_content &&
+				"message_text" in x.input_message_content &&
+				x.input_message_content.message_text instanceof FormattableString
 					? {
 							...x,
-							message_text: x.message_text.text,
-							entities: x.message_text.entities,
+							input_message_content: {
+								...x.input_message_content,
+								message_text: x.input_message_content.message_text.text,
+								entities: x.input_message_content.message_text.entities,
+							},
 						}
 					: x,
 			);
+		return params;
+	},
+	savePreparedInlineMessage: (params) => {
+		if (
+			"input_message_content" in params.result &&
+			params.result.input_message_content &&
+			"message_text" in params.result.input_message_content &&
+			params.result.input_message_content.message_text instanceof
+				FormattableString
+		) {
+			params.result = {
+				...params.result,
+				input_message_content: {
+					...params.result.input_message_content,
+					message_text: params.result.input_message_content.message_text.text,
+					entities: params.result.input_message_content.message_text.entities,
+				},
+			};
+		}
+
+		return params;
+	},
+	sendGift: (params) => {
+		if (params.text instanceof FormattableString) {
+			params.text_entities = params.text.entities;
+			params.text = params.text.text;
+		}
+
 		return params;
 	},
 	answerWebAppQuery: (params) => {
