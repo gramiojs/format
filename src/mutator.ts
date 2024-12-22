@@ -324,6 +324,13 @@ export const FormattableMap: FormattableMethods = {
 	},
 	savePreparedInlineMessage: (params) => {
 		if (
+			"caption" in params.result &&
+			params.result.caption instanceof FormattableString
+		) {
+			params.result.caption_entities = params.result.caption.entities;
+			params.result.caption = params.result.caption.text;
+		}
+		if (
 			"input_message_content" in params.result &&
 			params.result.input_message_content &&
 			"message_text" in params.result.input_message_content &&
