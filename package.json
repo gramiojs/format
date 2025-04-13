@@ -39,12 +39,12 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@types/bun": "latest",
-		"pkgroll": "^2.5.1",
-		"prettier": "^3.4.1",
-		"typescript": "^5.7.2"
+		"pkgroll": "^2.12.1",
+		"prettier": "^3.5.3",
+		"typescript": "^5.8.3"
 	},
 	"dependencies": {
-		"@gramio/types": "^8.0.6"
+		"@gramio/types": "^9.0.0"
 	},
 	"license": "MIT",
 	"files": ["dist"]
