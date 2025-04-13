@@ -404,4 +404,27 @@ export const FormattableMap: FormattableMethods = {
 		}
 		return params;
 	},
+
+	giftPremiumSubscription: (params) => {
+		if (params.text && params.text instanceof FormattableString) {
+			params.text_entities = params.text.entities;
+			params.text = params.text.text;
+		}
+		return params;
+	},
+
+	postStory: (params) => {
+		if (params.caption && params.caption instanceof FormattableString) {
+			params.caption_entities = params.caption.entities;
+			params.caption = params.caption.text;
+		}
+		return params;
+	},
+	editStory: (params) => {
+		if (params.caption && params.caption instanceof FormattableString) {
+			params.caption_entities = params.caption.entities;
+			params.caption = params.caption.text;
+		}
+		return params;
+	},
 };

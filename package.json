@@ -1,6 +1,6 @@
 {
 	"name": "@gramio/format",
-	"version": "0.1.5",
+	"version": "0.2.0",
 	"description": "Library for formatting text for Telegram Bot API",
 	"homepage": "https://gramio.dev/formatting.html",
 	"repository": {
@@ -44,7 +44,7 @@
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
-		"@gramio/types": "^9.0.0"
+		"@gramio/types": "^9.0.1"
 	},
 	"license": "MIT",
 	"files": ["dist"]
