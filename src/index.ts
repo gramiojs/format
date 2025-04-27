@@ -19,7 +19,38 @@ export * from "./mutator.js";
 export * from "./formattable-string.js";
 
 // TODO: improve typings
-function buildFormatter<T extends unknown[] = never>(
+function buildFormatter(type: TelegramMessageEntityType) {
+	function formatter(str: Stringable): FormattableString;
+	function formatter(
+		strings: TemplateStringsArray,
+		...values: Stringable[]
+	): FormattableString;
+	function formatter(
+		first: Stringable | TemplateStringsArray,
+		...rest: Stringable[]
+	): FormattableString {
+		if (
+			Array.isArray(first) &&
+			Object.prototype.hasOwnProperty.call(first, "raw")
+		) {
+			return formatter(
+				format(first as unknown as TemplateStringsArray, ...rest),
+			);
+		}
+		const formattable = getFormattable(first as Stringable);
+		return new FormattableString(formattable.text, [
+			{
+				type,
+				offset: 0,
+				length: formattable.text.length,
+			},
+			...formattable.entities,
+		]);
+	}
+	return formatter;
+}
+
+function buildFormatterWithArgs<T extends unknown[] = never>(
 	type: TelegramMessageEntityType,
 	...keys: T
 ) {
@@ -152,7 +183,10 @@ export const code = buildFormatter("code");
  *
  * ![pre](https://gramio.dev/formatting/pre.png)
  */
-export const pre = buildFormatter<[language?: string]>("pre", "language");
+export const pre = buildFormatterWithArgs<[language?: string]>(
+	"pre",
+	"language",
+);
 
 /**
  * Format text as [link](https://github.com/gramiojs/gramio). Cannot be combined with `code` and `pre`.
@@ -164,7 +198,7 @@ export const pre = buildFormatter<[language?: string]>("pre", "language");
  * ```
  * ![link](https://gramio.dev/formatting/link.png)
  */
-export const link = buildFormatter<[url: string]>("text_link", "url");
+export const link = buildFormatterWithArgs<[url: string]>("text_link", "url");
 
 /**
  * Format text as mention. Cannot be combined with `code` and `pre`.
@@ -175,9 +209,9 @@ export const link = buildFormatter<[url: string]>("text_link", "url");
  * ```
  * ![mention](https://gramio.dev/formatting/mention.png)
  */
-export const mention = buildFormatter<[user: TelegramUser]>(
+export const mention = buildFormatterWithArgs<[user: TelegramUser]>(
 	"text_mention",
-	//@ts-expect-error wrong typings.... but it's works fine
+	// @ts-expect-error wrong typings.... but it's works fine
 	"user",
 );
 
@@ -190,7 +224,7 @@ export const mention = buildFormatter<[user: TelegramUser]>(
  * ```
  * **NOTE**: Custom emoji entities can only be used by bots that purchased additional usernames on [Fragment](https://fragment.com/).
  */
-export const customEmoji = buildFormatter<[custom_emoji_id: string]>(
+export const customEmoji = buildFormatterWithArgs<[custom_emoji_id: string]>(
 	"custom_emoji",
 	"custom_emoji_id",
 );
