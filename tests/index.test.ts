@@ -135,4 +135,74 @@ describe("Usage format`` thing", () => {
 		expect(actual.text).toBe("a\n  b");
 		expect(actual.entities).toEqual([{ type: "bold", offset: 4, length: 1 }]);
 	});
+
+	test("nested formatters produce correct entities and text", () => {
+		const actual = format`${bold(italic("a"))} ${underline(strikethrough("b"))} ${spoiler(bold(italic("c")))}`;
+		expect(actual.text).toBe("a b c");
+		// TODO: More tests about order. is it matter?
+		expect(actual.entities).toEqual([
+			{ type: "bold", offset: 0, length: 1 },
+			{ type: "italic", offset: 0, length: 1 },
+			{ type: "underline", offset: 2, length: 1 },
+			{ type: "strikethrough", offset: 2, length: 1 },
+			{ type: "spoiler", offset: 4, length: 1 },
+			{ type: "bold", offset: 4, length: 1 },
+			{ type: "italic", offset: 4, length: 1 },
+		]);
+	});
+
+	test("deep join with nested formatters", () => {
+		const arr = ["x", "y"];
+		const actual = join(
+			arr,
+			(item, i) => format`${bold(item)}${italic(item)}`,
+			"|",
+		);
+		expect(actual.text).toBe("xx|yy");
+		expect(actual.entities).toEqual([
+			{ type: "bold", offset: 0, length: 1 },
+			{ type: "italic", offset: 1, length: 1 },
+			{ type: "bold", offset: 3, length: 1 },
+			{ type: "italic", offset: 4, length: 1 },
+		]);
+	});
+
+	test("triple nested join and format", () => {
+		const arr = ["a", "b"];
+		const actual = format`${join(arr, (x) => format`${bold(x)}${italic(x)}`, ",")}`;
+		expect(actual.text).toBe("aa,bb");
+		expect(actual.entities).toEqual([
+			{ type: "bold", offset: 0, length: 1 },
+			{ type: "italic", offset: 1, length: 1 },
+			{ type: "bold", offset: 3, length: 1 },
+			{ type: "italic", offset: 4, length: 1 },
+		]);
+	});
+
+	test("complex nested format with link, mention, customEmoji", () => {
+		const user: TelegramUser = { id: 42, is_bot: false, first_name: "User" };
+		const actual = format`${bold(link("l", "https://l"))} ${italic(mention("m", user))} ${spoiler(customEmoji("e", "id"))}`;
+		expect(actual.text).toBe("l m e");
+		console.log(actual.entities);
+		expect(actual.entities).toEqual([
+			{ type: "bold", offset: 0, length: 1 },
+			{ type: "text_link", offset: 0, length: 1, url: "https://l" },
+			{ type: "italic", offset: 2, length: 1 },
+			{ type: "text_mention", offset: 2, length: 1, user },
+			{ type: "spoiler", offset: 4, length: 1 },
+			{ type: "custom_emoji", offset: 4, length: 1, custom_emoji_id: "id" },
+		]);
+	});
+
+	test("deeply nested formatSaveIndents", () => {
+		const actual = formatSaveIndents`A
+  ${bold`${italic("B")} ${underline("C")}`}
+  D`;
+		expect(actual.text).toBe("A\n  B C\n  D");
+		expect(actual.entities).toEqual([
+			{ type: "bold", offset: 4, length: 3 },
+			{ type: "italic", offset: 4, length: 1 },
+			{ type: "underline", offset: 6, length: 1 },
+		]);
+	});
 });
