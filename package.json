@@ -1,23 +1,23 @@
 {
 	"name": "@gramio/format",
 	"version": "0.2.1",
-	"description": "Library for formatting text for Telegram Bot API",
-	"homepage": "https://gramio.dev/formatting.html",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/gramiojs/format.git"
 	},
-	"keywords": [
-		"gramio",
-		"telegram",
-		"bot",
-		"formatting",
-		"markdown",
-		"html",
-		"markdownV2"
-	],
 	"main": "./dist/index.js",
-	"type": "module",
+	"dependencies": {
+		"@gramio/types": "^9.0.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/bun": "latest",
+		"expect-type": "^1.2.1",
+		"marked": "^15.0.11",
+		"pkgroll": "^2.12.1",
+		"prettier": "^3.5.3",
+		"typescript": "^5.8.3"
+	},
 	"exports": {
 		".": {
 			"import": {
@@ -30,23 +30,32 @@
 			}
 		}
 	},
+	"description": "Library for formatting text for Telegram Bot API",
+	"files": ["dist"],
+	"homepage": "https://gramio.dev/formatting.html",
+	"keywords": [
+		"gramio",
+		"telegram",
+		"bot",
+		"formatting",
+		"markdown",
+		"html",
+		"markdownV2"
+	],
+	"license": "MIT",
+	"peerDependenciesMeta": {
+		"marked": {
+			"optional": true
+		}
+	},
+	"peerDependencies": {
+		"marked": "^15.0.11"
+	},
 	"scripts": {
 		"prepublishOnly": "bunx pkgroll",
 		"generate": "bun scripts/generate.ts",
 		"lint": "bunx @biomejs/biome check ./src",
 		"lint:fix": "bun lint --apply"
 	},
-	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@types/bun": "latest",
-		"expect-type": "^1.2.1",
-		"pkgroll": "^2.12.1",
-		"prettier": "^3.5.3",
-		"typescript": "^5.8.3"
-	},
-	"dependencies": {
-		"@gramio/types": "^9.0.1"
-	},
-	"license": "MIT",
-	"files": ["dist"]
+	"type": "module"
 }
