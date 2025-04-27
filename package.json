@@ -1,6 +1,6 @@
 {
 	"name": "@gramio/format",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/gramiojs/format.git"
@@ -27,6 +27,16 @@
 			"require": {
 				"types": "./dist/index.d.cts",
 				"default": "./dist/index.cjs"
+			}
+		},
+		"./markdown": {
+			"import": {
+				"types": "./dist/markdown/index.d.ts",
+				"default": "./dist/markdown/index.js"
+			},
+			"require": {
+				"types": "./dist/markdown/index.d.cts",
+				"default": "./dist/markdown/index.cjs"
 			}
 		}
 	},
