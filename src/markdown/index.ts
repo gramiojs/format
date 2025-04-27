@@ -87,7 +87,7 @@ function processToken(token: Token): FormattableString {
 	if (token.type === "paragraph") {
 		const tokenParagraph = token as Tokens.Paragraph;
 
-		return join(tokenParagraph.tokens, processToken, "\n\n");
+		return join(tokenParagraph.tokens, processToken, "");
 	}
 
 	// console.error(token);

@@ -120,4 +120,27 @@ describe("markdownToFormattable", () => {
 		expect(actual.text).toContain("Link\n\nCode");
 		expect(actual.text.endsWith("Code")).toBe(true);
 	});
+
+	test("Example from the docs", () => {
+		const input =
+			"Additional interface options. A JSON-serialized object for an [inline keyboard](https://core.telegram.org/bots/features#inline-keyboards), [custom reply keyboard](https://core.telegram.org/bots/features#keyboards), instructions to remove a reply keyboard or to force a reply from the user";
+		const actual = markdownToFormattable(input);
+
+		console.log(actual);
+
+		expect(actual.entities).toEqual([
+			{
+				type: "text_link",
+				offset: 62,
+				length: 15,
+				url: "https://core.telegram.org/bots/features#inline-keyboards",
+			},
+			{
+				type: "text_link",
+				offset: 79,
+				length: 21,
+				url: "https://core.telegram.org/bots/features#keyboards",
+			},
+		]);
+	});
 });
