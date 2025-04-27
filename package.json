@@ -39,6 +39,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@types/bun": "latest",
+		"expect-type": "^1.2.1",
 		"pkgroll": "^2.12.1",
 		"prettier": "^3.5.3",
 		"typescript": "^5.8.3"
