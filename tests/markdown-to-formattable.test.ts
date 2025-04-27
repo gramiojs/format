@@ -109,13 +109,15 @@ describe("markdownToFormattable", () => {
 	test("parses complex markdown", () => {
 		const input =
 			"# Title\n\n> Quote\n\n- **Bold**\n- *Italic*\n- [Link](https://a)\n\n`Code`";
+
 		const actual = markdownToFormattable(input);
-		console.error(actual);
-		expect(actual.text.includes("Title")).toBe(true);
-		expect(actual.text.includes("Quote")).toBe(true);
-		expect(actual.text.includes("Bold")).toBe(true);
-		expect(actual.text.includes("Italic")).toBe(true);
-		expect(actual.text.includes("Link")).toBe(true);
-		expect(actual.text.includes("Code")).toBe(true);
+
+		expect(actual.text.startsWith("Title")).toBe(true);
+		expect(actual.text.includes("\n\n")).toBe(true);
+		expect(actual.text).toContain("Title\n\nQuote");
+		expect(actual.text).toContain("Quote\n\n- Bold");
+		expect(actual.text).toContain("- Bold\n- Italic\n- Link");
+		expect(actual.text).toContain("Link\n\nCode");
+		expect(actual.text.endsWith("Code")).toBe(true);
 	});
 });

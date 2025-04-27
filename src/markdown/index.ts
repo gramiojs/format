@@ -5,6 +5,7 @@ import {
 	bold,
 	code,
 	format,
+	formatSaveIndents,
 	italic,
 	join,
 	link,
@@ -79,23 +80,50 @@ function processToken(token: Token): FormattableString {
 		const tokenText = token as Tokens.Text;
 
 		return tokenText.tokens
-			? format`${join(tokenText.tokens, processToken, "")}`
-			: format`${tokenText.text}`;
+			? join(tokenText.tokens, processToken, "")
+			: formatSaveIndents`${tokenText.text}`;
 	}
 
 	if (token.type === "paragraph") {
 		const tokenParagraph = token as Tokens.Paragraph;
 
-		return join(tokenParagraph.tokens, processToken, "");
+		return join(tokenParagraph.tokens, processToken, "\n\n");
 	}
 
 	// console.error(token);
 
-	return format`${"text" in token ? token.text : token.raw}`;
+	return formatSaveIndents`${"text" in token ? token.text : token.raw}`;
 }
 
+// IDK why marked doesn't handle this correctly
+function workaroundForHeading(tokens: Token[]): Token[] {
+	const result: Token[] = [];
+
+	for (let i = 0; i < tokens.length; i++) {
+		const token = tokens[i];
+		result.push(token);
+		if (token.type === "heading") {
+			const nextLines = token.raw.match(/\n/g);
+
+			if (nextLines?.length) {
+				result.push({
+					type: "space",
+					raw: "\n".repeat(nextLines.length),
+				});
+			}
+		}
+	}
+
+	return result;
+}
+
+/**
+ * ! This function can be changed in the future
+ */
 export function markdownToFormattable(markdown: string) {
-	const tokens = lexer(markdown) as Token[];
+	const tokens = workaroundForHeading(lexer(markdown) as Token[]);
+
+	// console.log(Bun.inspect(tokens));
 
 	return join(tokens, processToken, "");
 }
