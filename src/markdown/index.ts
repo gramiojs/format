@@ -47,21 +47,7 @@ function processToken(token: Token): FormattableString {
 	if (token.type === "list") {
 		const tokenList = token as Tokens.List;
 
-		let itemStart =
-			tokenList.ordered && tokenList.start !== "" ? tokenList.start : "-";
-
-		return join(
-			tokenList.items,
-			(item) => {
-				return join(
-					item.tokens,
-					(x) =>
-						format`${typeof itemStart === "number" ? itemStart++ : itemStart} ${processToken(x)}`,
-					"",
-				);
-			},
-			"\n",
-		);
+		return processListToken(tokenList);
 	}
 
 	if (token.type === "codespan") {
@@ -95,6 +81,33 @@ function processToken(token: Token): FormattableString {
 	return formatSaveIndents`${"text" in token ? token.text : token.raw}`;
 }
 
+function processListToken(tokenList: Tokens.List): FormattableString {
+	const isOrdered = tokenList.ordered;
+	const startNumber = isOrdered && typeof tokenList.start === "number" ? tokenList.start : 1;
+	
+	return join(
+		tokenList.items,
+		(item, itemIndex) => {
+			const bulletOrNumber = isOrdered ? startNumber + itemIndex : "-";
+			
+			return join(
+				item.tokens,
+				(subToken, subTokenIndex) => {
+					if (subTokenIndex === 0) {
+						return format`${bulletOrNumber}${isOrdered ? "." : ""} ${processToken(subToken)}`;
+					}
+					if (subToken.type === "list") {
+						return format`\n${processToken(subToken)}`;
+					}
+					return processToken(subToken);
+				},
+				"",
+			);
+		},
+		"\n",
+	);
+}
+
 // IDK why marked doesn't handle this correctly
 function workaroundForHeading(tokens: Token[]): Token[] {
 	const result: Token[] = [];
@@ -122,8 +135,6 @@ function workaroundForHeading(tokens: Token[]): Token[] {
  */
 export function markdownToFormattable(markdown: string) {
 	const tokens = workaroundForHeading(lexer(markdown) as Token[]);
-
-	// console.log(Bun.inspect(tokens));
 
 	return join(tokens, processToken, "");
 }
