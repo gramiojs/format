@@ -427,4 +427,40 @@ export const FormattableMap: FormattableMethods = {
 		}
 		return params;
 	},
+
+	editMessageChecklist: (params) => {
+		if (params.checklist.title instanceof FormattableString) {
+			params.checklist.title_entities = params.checklist.title.entities;
+			params.checklist.title = params.checklist.title.text;
+		}
+		if (params.checklist.tasks.length) {
+			params.checklist.tasks = params.checklist.tasks.map((x) => {
+				if (x.text instanceof FormattableString) {
+					x.text_entities = x.text.entities;
+					x.text = x.text.text;
+				}
+				return x;
+			});
+		}
+
+		return params;
+	},
+
+	sendChecklist: (params) => {
+		if (params.checklist.title instanceof FormattableString) {
+			params.checklist.title_entities = params.checklist.title.entities;
+			params.checklist.title = params.checklist.title.text;
+		}
+		if (params.checklist.tasks.length) {
+			params.checklist.tasks = params.checklist.tasks.map((x) => {
+				if (x.text instanceof FormattableString) {
+					x.text_entities = x.text.entities;
+					x.text = x.text.text;
+				}
+				return x;
+			});
+		}
+
+		return params;
+	},
 };

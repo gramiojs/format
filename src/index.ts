@@ -11,12 +11,12 @@ import type {
 } from "@gramio/types";
 import {
 	FormattableString,
-	type Stringable,
 	getFormattable,
+	type Stringable,
 } from "./formattable-string.js";
 
-export * from "./mutator.js";
 export * from "./formattable-string.js";
+export * from "./mutator.js";
 
 // TODO: improve typings
 function buildFormatter(type: TelegramMessageEntityType) {
@@ -29,10 +29,7 @@ function buildFormatter(type: TelegramMessageEntityType) {
 		first: Stringable | TemplateStringsArray,
 		...rest: Stringable[]
 	): FormattableString {
-		if (
-			Array.isArray(first) &&
-			Object.prototype.hasOwnProperty.call(first, "raw")
-		) {
+		if (Array.isArray(first) && Object.hasOwn(first, "raw")) {
 			return formatter(
 				format(first as unknown as TemplateStringsArray, ...rest),
 			);

@@ -1,9 +1,9 @@
-import { type Token, type Tokens, lexer } from "marked";
+import { lexer, type Token, type Tokens } from "marked";
 import {
-	type FormattableString,
 	blockquote,
 	bold,
 	code,
+	type FormattableString,
 	format,
 	formatSaveIndents,
 	italic,
@@ -83,13 +83,14 @@ function processToken(token: Token): FormattableString {
 
 function processListToken(tokenList: Tokens.List): FormattableString {
 	const isOrdered = tokenList.ordered;
-	const startNumber = isOrdered && typeof tokenList.start === "number" ? tokenList.start : 1;
-	
+	const startNumber =
+		isOrdered && typeof tokenList.start === "number" ? tokenList.start : 1;
+
 	return join(
 		tokenList.items,
 		(item, itemIndex) => {
 			const bulletOrNumber = isOrdered ? startNumber + itemIndex : "-";
-			
+
 			return join(
 				item.tokens,
 				(subToken, subTokenIndex) => {
