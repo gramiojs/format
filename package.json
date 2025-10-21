@@ -1,6 +1,6 @@
 {
 	"name": "@gramio/format",
-	"version": "0.3.3",
+	"version": "0.3.4",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/gramiojs/format.git"
@@ -38,10 +38,18 @@
 				"types": "./dist/markdown/index.d.cts",
 				"default": "./dist/markdown/index.cjs"
 			}
+		},
+		"./dist/*": {
+			"import": {
+				"types": "./dist/*/index.d.ts",
+				"default": "./dist/*/index.js"
+			}
 		}
 	},
 	"description": "Library for formatting text for Telegram Bot API",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"homepage": "https://gramio.dev/formatting.html",
 	"keywords": [
 		"gramio",

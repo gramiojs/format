@@ -20,14 +20,14 @@ export * from "./mutator.js";
 
 // TODO: improve typings
 function buildFormatter(type: TelegramMessageEntityType) {
-	function formatter(str: Stringable): FormattableString;
+	function formatter(str: Stringable | undefined | null): FormattableString;
 	function formatter(
 		strings: TemplateStringsArray,
-		...values: Stringable[]
+		...values: (Stringable | undefined | null)[]
 	): FormattableString;
 	function formatter(
-		first: Stringable | TemplateStringsArray,
-		...rest: Stringable[]
+		first: Stringable | TemplateStringsArray | undefined | null,
+		...rest: (Stringable | undefined | null)[]
 	): FormattableString {
 		if (Array.isArray(first) && Object.hasOwn(first, "raw")) {
 			return formatter(
@@ -51,7 +51,7 @@ function buildFormatterWithArgs<T extends unknown[] = never>(
 	type: TelegramMessageEntityType,
 	...keys: T
 ) {
-	return (str: Stringable, ...args: T) => {
+	return (str: Stringable | undefined | null, ...args: T) => {
 		const formattable = getFormattable(str);
 		const formattableArgs = Object.fromEntries(
 			keys.map((key, i) => [key, args[i]]),
@@ -257,7 +257,10 @@ export function join<T>(
 	return new FormattableString(text, entities);
 }
 
-function processDeeperFormat(offset: number, strings: Stringable[]) {
+function processDeeperFormat(
+	offset: number,
+	strings: (Stringable | undefined | null)[],
+) {
 	let text = "";
 	const entities: TelegramMessageEntity[] = [];
 
@@ -276,14 +279,20 @@ function processDeeperFormat(offset: number, strings: Stringable[]) {
 					offset: e.offset + text.length + offset,
 				})),
 			);
-		text += str.toString();
+
+		if (str != null && str !== undefined) {
+			text += str.toString();
+		}
 	}
 
 	return [text, entities] as const;
 }
 
 // [INFO] Thanks https://github.com/grammyjs/parse-mode/blob/49ba35bac208536edfa6e8d4ea665ea0f7fff522/src/format.ts#L213
-function processRawFormat(stringParts: string[], strings: Stringable[]) {
+function processRawFormat(
+	stringParts: string[],
+	strings: (Stringable | undefined | null)[],
+) {
 	const entities: TelegramMessageEntity[] = [];
 	let text = "";
 
@@ -306,7 +315,9 @@ function processRawFormat(stringParts: string[], strings: Stringable[]) {
 					})),
 				);
 
-			if (typeof str !== "undefined") text += str.toString();
+			if (str != null && str !== undefined && typeof str !== "undefined") {
+				text += str.toString();
+			}
 		}
 	}
 
@@ -340,7 +351,7 @@ function processRawFormat(stringParts: string[], strings: Stringable[]) {
  */
 export function format(
 	stringParts: TemplateStringsArray,
-	...strings: Stringable[]
+	...strings: (Stringable | undefined | null)[]
 ) {
 	return processRawFormat(
 		stringParts.map((x) => x.replace(/(?!\n\s+\n)\n(?!\n)\s+/g, "\n")),
@@ -375,7 +386,7 @@ export function format(
  */
 export function formatSaveIndents(
 	stringParts: TemplateStringsArray,
-	...strings: Stringable[]
+	...strings: (Stringable | undefined | null)[]
 ) {
 	return processRawFormat([...stringParts], strings);
 }

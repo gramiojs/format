@@ -44,8 +44,12 @@ export class FormattableString {
 	}
 }
 
-export function getFormattable(str: Stringable) {
+export function getFormattable(str: Stringable | undefined | null) {
 	if (str instanceof FormattableString) return str;
+
+	if (str == null || str === undefined) {
+		return new FormattableString("", []);
+	}
 
 	return new FormattableString(str.toString(), []);
 }

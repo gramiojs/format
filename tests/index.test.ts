@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { TelegramMessageEntity, TelegramUser } from "@gramio/types";
+import type { TelegramUser } from "@gramio/types";
 import {
 	blockquote,
 	bold,
@@ -155,7 +155,7 @@ describe("Usage format`` thing", () => {
 		const arr = ["x", "y"];
 		const actual = join(
 			arr,
-			(item, i) => format`${bold(item)}${italic(item)}`,
+			(item, _i) => format`${bold(item)}${italic(item)}`,
 			"|",
 		);
 		expect(actual.text).toBe("xx|yy");
@@ -204,5 +204,31 @@ describe("Usage format`` thing", () => {
 			{ type: "italic", offset: 4, length: 1 },
 			{ type: "underline", offset: 6, length: 1 },
 		]);
+	});
+
+	test("handles undefined and null values gracefully", () => {
+		const result1 = format`${undefined}${null}${"text"}`;
+		expect(result1.text).toBe("text");
+		expect(result1.entities).toEqual([]);
+
+		const result2 = bold(undefined);
+		expect(result2.text).toBe("");
+		expect(result2.entities).toEqual([{ type: "bold", offset: 0, length: 0 }]);
+
+		const result3 = italic(null);
+		expect(result3.text).toBe("");
+		expect(result3.entities).toEqual([
+			{ type: "italic", offset: 0, length: 0 },
+		]);
+
+		const result4 = format`${"start"}${undefined}${"end"}`;
+		expect(result4.text).toBe("startend");
+		expect(result4.entities).toEqual([]);
+	});
+
+	test("join handles undefined and null values", () => {
+		const result = join([undefined, "text", null, "more"], (x) => x, " ");
+		expect(result.text).toBe("text more");
+		expect(result.entities).toEqual([]);
 	});
 });
