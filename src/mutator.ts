@@ -1,6 +1,9 @@
 import type { APIMethodParams, APIMethods } from "@gramio/types";
 import { FormattableString } from "./formattable-string.js";
 
+const isFormattableString = (value: unknown): value is FormattableString =>
+	FormattableString[Symbol.hasInstance](value);
+
 type FormattableMethods = {
 	[Method in keyof APIMethods]?: (
 		params: NonNullable<APIMethodParams<Method>>,
@@ -309,7 +312,7 @@ export const FormattableMap: FormattableMethods = {
 				"input_message_content" in x &&
 				x.input_message_content &&
 				"message_text" in x.input_message_content &&
-				x.input_message_content.message_text instanceof FormattableString
+				isFormattableString(x.input_message_content.message_text)
 					? {
 							...x,
 							input_message_content: {
@@ -334,8 +337,7 @@ export const FormattableMap: FormattableMethods = {
 			"input_message_content" in params.result &&
 			params.result.input_message_content &&
 			"message_text" in params.result.input_message_content &&
-			params.result.input_message_content.message_text instanceof
-				FormattableString
+			isFormattableString(params.result.input_message_content.message_text)
 		) {
 			params.result = {
 				...params.result,
@@ -370,8 +372,7 @@ export const FormattableMap: FormattableMethods = {
 			"input_message_content" in params.result &&
 			params.result.input_message_content !== undefined &&
 			"message_text" in params.result.input_message_content &&
-			params.result.input_message_content.message_text instanceof
-				FormattableString
+			isFormattableString(params.result.input_message_content.message_text)
 		) {
 			params.result.input_message_content.entities =
 				params.result.input_message_content.message_text.entities;

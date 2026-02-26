@@ -19,9 +19,11 @@
       },
       "peerDependencies": {
         "marked": "^15.0.11",
+        "node-html-parser": ">=6.0.0",
       },
       "optionalPeers": [
         "marked",
+        "node-html-parser",
       ],
     },
   },
