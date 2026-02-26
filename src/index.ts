@@ -231,18 +231,39 @@ export const customEmoji = buildFormatterWithArgs<[custom_emoji_id: string]>(
  * Separator by default is `, `
  * @example
  * ```ts
+ * join([format`hello`, format`world`], "\n")
  * format`${join(["test", "other"], (x) => format`${bold(x)}`, "\n")}`
  * ```
  */
+export function join(
+	array: (Stringable | false | undefined | null)[],
+	separator?: string,
+): FormattableString;
 export function join<T>(
 	array: T[],
 	iterator: (item: T, index: number) => Stringable | false | undefined | null,
+	separator?: string,
+): FormattableString;
+export function join<T>(
+	array: T[],
+	iteratorOrSeparator?:
+		| ((item: T, index: number) => Stringable | false | undefined | null)
+		| string,
 	separator = ", ",
-) {
+): FormattableString {
 	let text = "";
 	const entities: TelegramMessageEntity[] = [];
 
-	for (const [index, str] of array.map(iterator).entries()) {
+	const items =
+		typeof iteratorOrSeparator === "function"
+			? array.map(iteratorOrSeparator)
+			: array;
+	const sep =
+		typeof iteratorOrSeparator === "string"
+			? iteratorOrSeparator
+			: separator;
+
+	for (const [index, str] of (items as (Stringable | false | undefined | null)[]).entries()) {
 		if (str instanceof FormattableString)
 			entities.push(
 				...str.entities.map((e) => ({
@@ -251,7 +272,7 @@ export function join<T>(
 				})),
 			);
 		if (typeof str !== "undefined" && str !== null && str !== false)
-			text += str.toString() + (index === array.length - 1 ? "" : separator);
+			text += str.toString() + (index === items.length - 1 ? "" : sep);
 	}
 
 	return new FormattableString(text, entities);

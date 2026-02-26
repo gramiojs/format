@@ -231,4 +231,31 @@ describe("Usage format`` thing", () => {
 		expect(result.text).toBe("text more");
 		expect(result.entities).toEqual([]);
 	});
+
+	test("join(array, separator) joins FormattableStrings directly", () => {
+		const result = join([format`${bold("a")}`, format`${italic("b")}`], "\n");
+		expect(result.text).toBe("a\nb");
+		expect(result.entities).toEqual([
+			{ type: "bold", offset: 0, length: 1 },
+			{ type: "italic", offset: 2, length: 1 },
+		]);
+	});
+
+	test("join(array, separator) uses default separator', '", () => {
+		const result = join([bold("x"), bold("y")]);
+		expect(result.text).toBe("x, y");
+		expect(result.entities).toEqual([
+			{ type: "bold", offset: 0, length: 1 },
+			{ type: "bold", offset: 3, length: 1 },
+		]);
+	});
+
+	test("join(array, separator) skips falsy values", () => {
+		const result = join([bold("a"), null, undefined, false, bold("b")], " | ");
+		expect(result.text).toBe("a | b");
+		expect(result.entities).toEqual([
+			{ type: "bold", offset: 0, length: 1 },
+			{ type: "bold", offset: 4, length: 1 },
+		]);
+	});
 });
