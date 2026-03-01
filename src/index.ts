@@ -220,10 +220,49 @@ export const mention = buildFormatterWithArgs<[user: TelegramUser]>(
  * format`test ${customEmoji("⚔️", "5222106016283378623")}`
  * ```
  * **NOTE**: Custom emoji entities can only be used by bots that purchased additional usernames on [Fragment](https://fragment.com/).
+ * ![customEmoji](https://gramio.dev/formatting/custom_emoji.png)
  */
 export const customEmoji = buildFormatterWithArgs<[custom_emoji_id: string]>(
 	"custom_emoji",
 	"custom_emoji_id",
+);
+
+/**
+ * Format text as a date/time entity with a Unix timestamp.
+ * Telegram renders it in the user's locale and timezone.
+ *
+ * @param str - The display text (shown as-is when `date_time_format` is empty)
+ * @param unix_time - Unix timestamp associated with the entity
+ * @param date_time_format - Optional format string matching `r|w?[dD]?[tT]?`:
+ *   - `""` — display text as-is; user can still see the date in their local format
+ *   - `"r"` — relative time (e.g. "in 3 hours"). Cannot be combined with other chars.
+ *   - `"w"` — day of week in user's language
+ *   - `"d"` — short date (e.g. "17.03.22")
+ *   - `"D"` — long date (e.g. "March 17, 2022")
+ *   - `"t"` — short time (e.g. "22:45")
+ *   - `"T"` — long time (e.g. "22:45:00")
+ *   - Combinations: `"wD"`, `"dt"`, `"wDT"`, `"Dt"`, etc.
+ *
+ * @example
+ * ```ts
+ * dateTime("soon", 1740787200, "r")           // relative: "in 2 days"
+ * dateTime("17.03.22", 1740787200, "d")        // short date
+ * dateTime("March 17", 1740787200, "D")        // long date
+ * dateTime("22:45", 1740787200, "t")           // short time
+ * dateTime("22:45:00", 1740787200, "T")        // long time
+ * dateTime("Thu, March 17", 1740787200, "wD")  // weekday + long date
+ * dateTime("March 17, 22:45", 1740787200, "Dt") // long date + short time
+ * format`Event starts ${dateTime("March 17 at 22:45", 1740787200, "DT")}`
+ * ```
+ * ![dateTime](https://gramio.dev/formatting/date_time.png)
+ */
+export const dateTime = buildFormatterWithArgs<
+	[unix_time: number, date_time_format?: string]
+>(
+	"date_time",
+	// @ts-expect-error string key doesn't match number type in T
+	"unix_time",
+	"date_time_format",
 );
 
 /**
