@@ -50,6 +50,16 @@
 				"default": "./dist/html/index.cjs"
 			}
 		},
+		"./middleware": {
+			"import": {
+				"types": "./dist/middleware.d.ts",
+				"default": "./dist/middleware.js"
+			},
+			"require": {
+				"types": "./dist/middleware.d.cts",
+				"default": "./dist/middleware.cjs"
+			}
+		},
 		"./dist/*": {
 			"import": {
 				"types": "./dist/*/index.d.ts",
