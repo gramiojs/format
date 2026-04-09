@@ -109,22 +109,50 @@ function processListToken(tokenList: Tokens.List): FormattableString {
 	);
 }
 
-// IDK why marked doesn't handle this correctly
-function workaroundForHeading(tokens: Token[]): Token[] {
+/**
+ * Insert synthetic `space` tokens between adjacent block tokens so
+ * the rendered output preserves the original newline separation.
+ *
+ * Marked stores a block's trailing newlines on its own `raw` field
+ * (e.g. a paragraph followed by a list without a blank line yields
+ * `paragraph.raw === "Agenda:\n"`, then a `list` token). But
+ * `processToken` works off the structured `tokens`/`text` fields
+ * and drops that trailing whitespace. Without this normalisation,
+ * two adjacent blocks get glued together in the output:
+ *
+ *   Input:   "Agenda:\n- one\n- two"
+ *   Broken:  "Agenda:- one\n- two"
+ *   Fixed:   "Agenda:\n- one\n- two"
+ *
+ * Strategy: for each block, if the next token is not already a
+ * `space` (i.e. marked did not record a blank-line separator) and
+ * the current block's `raw` has trailing `\n`s, emit a synthetic
+ * `space` token carrying exactly those newlines.
+ *
+ * This generalises the older heading-only workaround — headings
+ * are covered by the same trailing-newline count logic.
+ */
+function normalizeBlockSeparators(tokens: Token[]): Token[] {
 	const result: Token[] = [];
 
 	for (let i = 0; i < tokens.length; i++) {
 		const token = tokens[i];
 		result.push(token);
-		if (token.type === "heading") {
-			const nextLines = token.raw.match(/\n/g);
 
-			if (nextLines?.length) {
-				result.push({
-					type: "space",
-					raw: "\n".repeat(nextLines.length),
-				});
-			}
+		// `space` tokens already carry their own newlines in `raw` —
+		// `processToken`'s default branch returns that raw as-is, so
+		// re-emitting trailing newlines around them would double-count.
+		if (token.type === "space") continue;
+
+		const next = tokens[i + 1];
+		if (!next || next.type === "space") continue;
+
+		const trailing = token.raw?.match(/\n+$/)?.[0];
+		if (trailing) {
+			result.push({
+				type: "space",
+				raw: trailing,
+			});
 		}
 	}
 
@@ -135,7 +163,7 @@ function workaroundForHeading(tokens: Token[]): Token[] {
  * ! This function can be changed in the future
  */
 export function markdownToFormattable(markdown: string) {
-	const tokens = workaroundForHeading(lexer(markdown) as Token[]);
+	const tokens = normalizeBlockSeparators(lexer(markdown) as Token[]);
 
 	return join(tokens, processToken, "");
 }

@@ -259,6 +259,85 @@ Text after all lists`;
 		expect(actual.text).toBe("First\n\nSecond");
 	});
 
+	describe("block separators — regression for single-newline gluing", () => {
+		// These cases produced glued output in @gramio/format <= 0.6.0
+		// because marked parses `foo\n- bar` as two adjacent block
+		// tokens (paragraph + list) without emitting a `space` token,
+		// and markdownToFormattable joined top-level tokens with "".
+		// Result: "foo- bar" instead of "foo\n- bar".
+
+		test("paragraph immediately followed by unordered list", () => {
+			const input = "Agenda:\n- one\n- two\n- three";
+			const actual = markdownToFormattable(input);
+			expect(actual.text).toBe("Agenda:\n- one\n- two\n- three");
+			expect(actual.text).not.toContain("Agenda:- one");
+		});
+
+		test("paragraph immediately followed by ordered list", () => {
+			const input = "Steps:\n1. First\n2. Second\n3. Third";
+			const actual = markdownToFormattable(input);
+			expect(actual.text).toBe("Steps:\n1. First\n2. Second\n3. Third");
+			expect(actual.text).not.toContain("Steps:1. First");
+		});
+
+		test("list immediately followed by paragraph", () => {
+			const input = "- a\n- b\nAfterwards.";
+			const actual = markdownToFormattable(input);
+			// marked folds a trailing line without a blank line into the
+			// list item itself ("loose" vs "tight" list behaviour), so the
+			// exact position of "Afterwards." may vary — but there must be
+			// at least one newline between the bullets and the follow-up
+			// text, never glued as "- bAfterwards.".
+			expect(actual.text).not.toContain("- bAfterwards.");
+			expect(actual.text).toContain("Afterwards.");
+		});
+
+		test("paragraph immediately followed by blockquote", () => {
+			const input = "Context:\n> important note";
+			const actual = markdownToFormattable(input);
+			expect(actual.text).not.toContain("Context:important note");
+			expect(actual.text).toContain("Context:");
+			expect(actual.text).toContain("important note");
+		});
+
+		test("paragraph immediately followed by code block", () => {
+			const input = "Run this:\n```\nbun install\n```";
+			const actual = markdownToFormattable(input);
+			expect(actual.text).not.toContain("Run this:bun install");
+			expect(actual.text).toContain("Run this:");
+			expect(actual.text).toContain("bun install");
+		});
+
+		test("double newline between paragraph and list still works", () => {
+			const input = "Agenda:\n\n- one\n- two";
+			const actual = markdownToFormattable(input);
+			expect(actual.text).toBe("Agenda:\n\n- one\n- two");
+		});
+
+		test("three paragraphs with single newlines between each", () => {
+			// CommonMark would treat consecutive lines without blank
+			// separator as one paragraph with line breaks. This test
+			// documents current behaviour — what matters is no gluing
+			// without a separator.
+			const input = "First.\nSecond.\nThird.";
+			const actual = markdownToFormattable(input);
+			expect(actual.text).not.toContain("First.Second.");
+			expect(actual.text).not.toContain("Second.Third.");
+		});
+
+		test("LLM-style enumerated answer (Russian)", () => {
+			// Real-world repro from jagospace Telegram bot. GPT almost
+			// never bothers with blank lines before bullets.
+			const input =
+				"Агенда:\n- первая — за подписку на канал\n- вторая если есть премиум — за установку премиум эмодзи\n- третья — за пожертвование звёзд";
+			const actual = markdownToFormattable(input);
+			expect(actual.text).toBe(
+				"Агенда:\n- первая — за подписку на канал\n- вторая если есть премиум — за установку премиум эмодзи\n- третья — за пожертвование звёзд",
+			);
+			expect(actual.text).not.toContain("Агенда:- первая");
+		});
+	});
+
 	test("parses complex markdown", () => {
 		const input =
 			"# Title\n\n> Quote\n\n- **Bold**\n- *Italic*\n- [Link](https://a)\n\n`Code`";
