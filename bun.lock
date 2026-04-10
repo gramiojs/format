@@ -9,7 +9,7 @@
       },
       "devDependencies": {
         "@biomejs/biome": "^2.4.4",
-        "@gramio/schema-parser": "^1.0.1",
+        "@gramio/schema-parser": "^1.1.0",
         "@types/bun": "^1.3.9",
         "expect-type": "^1.3.0",
         "marked": "^17.0.3",
@@ -99,7 +99,7 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.26.0", "", { "os": "win32", "cpu": "x64" }, "sha512-WAckBKaVnmFqbEhbymrPK7M086DQMpL1XoRbpmN0iW8k5JSXjDRQBhcZNa0VweItknLq9eAeCL34jK7/CDcw7A=="],
 
-    "@gramio/schema-parser": ["@gramio/schema-parser@1.0.1", "", { "dependencies": { "cheerio": "^1.0.0", "turndown": "^7.2.0" } }, "sha512-0S5hMTdoTDBmQCJ24ktKAqBVO+R1fofuybF6ybU8leAGmVhlu1es1opUXHIBUw/hkYP0Z4OsQHb2Lt6+WUVK+w=="],
+    "@gramio/schema-parser": ["@gramio/schema-parser@1.1.0", "", { "dependencies": { "cheerio": "^1.0.0", "turndown": "^7.2.0" } }, "sha512-VmWNXGQK/rBuBokpa5dwzThqUke9ZzdswSb7ZYsq4/pp1UF99rz7DkdowI5jFGv4ioUQKPWXwShncT/w+R49MQ=="],
 
     "@gramio/types": ["@gramio/types@9.6.0", "", {}, "sha512-LEyG05rOVHaxaCpagyPXaMj8X5NUYtTp8/UiOJasVuo86FCbnQmlNx3iJ5zGR/syRTMaa5qDd+qo4fOxrP2hmQ=="],
 

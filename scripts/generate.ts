@@ -10,19 +10,6 @@ const OUTPUT = "./src/mutator.ts";
 
 const schema = await getCustomSchema();
 
-// Fallback for @gramio/schema-parser < 1.1.0, which didn't detect the bare
-// `parse_mode` + `entities` sibling pattern used by InputTextMessageContent.
-// Idempotent: skips fields already marked by newer parser versions.
-for (const obj of schema.objects) {
-	if (obj.type !== "fields") continue;
-	const keys = new Set(obj.fields.map((f) => f.key));
-	if (!keys.has("parse_mode") || !keys.has("entities")) continue;
-	const candidates = obj.fields.filter(
-		(f) => f.type === "string" && f.key !== "parse_mode" && !f.semanticType,
-	);
-	if (candidates.length === 1) candidates[0].semanticType = "formattable";
-}
-
 const objectByName = new Map(schema.objects.map((o) => [o.name, o]));
 
 type Access = {
