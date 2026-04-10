@@ -156,6 +156,33 @@ Result: a single `FormattableString` with the full concatenated text and all ent
 bun run lint        # biome check
 bun run lint:fix    # biome check --apply
 bunx pkgroll        # build dist/
+bun scripts/generate.ts  # regenerate src/mutator.ts from the live Bot API schema
 ```
 
-Types come from `@gramio/types` (auto-generated from Telegram Bot API). Update the package when new entity types or fields are added upstream.
+Types come from `@gramio/types` (auto-generated from Telegram Bot API). Update the package when new entity types or fields are added upstream. The mutator generator uses `@gramio/schema-parser`'s `getCustomSchema()` — if it returns a field that isn't in the installed `@gramio/types` yet, bump `@gramio/types` before regenerating.
+
+---
+
+## Release process
+
+Publishing is handled by the `publish.yml` GitHub Actions workflow — never `npm publish` locally. Trigger and monitor it with `gh`:
+
+```bash
+# 1. bump version in package.json, commit, push to origin/master
+git push origin master
+
+# 2. kick off the workflow (workflow_dispatch)
+gh workflow run publish.yml --repo gramiojs/format --ref master
+
+# 3. grab the run id and watch it until it exits
+gh run list --repo gramiojs/format --workflow=publish.yml --limit 1
+gh run watch <run-id> --repo gramiojs/format --exit-status
+
+# on failure, pull only the error lines (avoid dumping the full log)
+gh run view <run-id> --repo gramiojs/format --log-failed | grep "error TS"
+
+# confirm the new version landed on npm
+curl -s https://registry.npmjs.org/@gramio/format/latest | jq -r .version
+```
+
+The workflow publishes to both JSR and npm and creates a GitHub Release tagged `v${version}`. Changelog comes from `scripts/generate-changelog.ts`.
