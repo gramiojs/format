@@ -7,18 +7,18 @@
 	},
 	"main": "./dist/index.js",
 	"dependencies": {
-		"@gramio/types": "^9.6.0"
+		"@gramio/types": "^9.6.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.4.4",
+		"@biomejs/biome": "^2.4.14",
 		"@gramio/schema-parser": "^1.1.0",
-		"@types/bun": "^1.3.9",
+		"@types/bun": "^1.3.13",
 		"expect-type": "^1.3.0",
-		"marked": "^17.0.3",
-		"node-html-parser": "^7.0.2",
+		"marked": "^17.0.6",
+		"node-html-parser": "^7.1.0",
 		"pkgroll": "^2.27.0",
-		"prettier": "^3.8.1",
-		"typescript": "^5.9.3"
+		"prettier": "^3.8.3",
+		"typescript": "^6.0.3"
 	},
 	"exports": {
 		".": {

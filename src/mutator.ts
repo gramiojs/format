@@ -14,7 +14,7 @@ type FormattableMethods = {
  * A set of methods that decompose the {@link FormattableString} into a string and
  * an array of [entities](https://core.telegram.org/bots/api#messageentity) for further sending to the Telegram Bot API
  *
- * @codegenerated from Telegram Bot API 9.6
+ * @codegenerated from Telegram Bot API 10.0
  */
 export const FormattableMap: FormattableMethods = {
 	sendMessage: (params) => {
@@ -50,6 +50,22 @@ export const FormattableMap: FormattableMethods = {
 		return params;
 	},
 	sendPhoto: (params) => {
+		if (isFormattableString(params.caption)) {
+			params.caption_entities = params.caption.entities;
+			params.caption = params.caption.text;
+		}
+		if (
+			params.reply_parameters !== undefined &&
+			"quote" in params.reply_parameters &&
+			isFormattableString(params.reply_parameters.quote)
+		) {
+			params.reply_parameters.quote_entities =
+				params.reply_parameters.quote.entities;
+			params.reply_parameters.quote = params.reply_parameters.quote.text;
+		}
+		return params;
+	},
+	sendLivePhoto: (params) => {
 		if (isFormattableString(params.caption)) {
 			params.caption_entities = params.caption.entities;
 			params.caption = params.caption.text;
@@ -240,9 +256,27 @@ export const FormattableMap: FormattableMethods = {
 			params.explanation_entities = params.explanation.entities;
 			params.explanation = params.explanation.text;
 		}
+		if (
+			params.explanation_media !== undefined &&
+			"caption" in params.explanation_media &&
+			isFormattableString(params.explanation_media.caption)
+		) {
+			params.explanation_media.caption_entities =
+				params.explanation_media.caption.entities;
+			params.explanation_media.caption =
+				params.explanation_media.caption.text;
+		}
 		if (isFormattableString(params.description)) {
 			params.description_entities = params.description.entities;
 			params.description = params.description.text;
+		}
+		if (
+			params.media !== undefined &&
+			"caption" in params.media &&
+			isFormattableString(params.media.caption)
+		) {
+			params.media.caption_entities = params.media.caption.entities;
+			params.media.caption = params.media.caption.text;
 		}
 		if (
 			params.reply_parameters !== undefined &&
@@ -260,6 +294,21 @@ export const FormattableMap: FormattableMethods = {
 							...x,
 							text: x.text.text,
 							text_entities: x.text.entities,
+						}
+					: x,
+			);
+		if (params.options.length)
+			params.options = params.options.map((x) =>
+				x.media !== undefined &&
+				"caption" in x.media &&
+				isFormattableString(x.media.caption)
+					? {
+							...x,
+							media: {
+								...x.media,
+								caption: x.media.caption.text,
+								caption_entities: x.media.caption.entities,
+							},
 						}
 					: x,
 			);
@@ -307,6 +356,29 @@ export const FormattableMap: FormattableMethods = {
 		if (isFormattableString(params.text)) {
 			params.entities = params.text.entities;
 			params.text = params.text.text;
+		}
+		return params;
+	},
+	answerGuestQuery: (params) => {
+		if (
+			"caption" in params.result &&
+			isFormattableString(params.result.caption)
+		) {
+			params.result.caption_entities = params.result.caption.entities;
+			params.result.caption = params.result.caption.text;
+		}
+		if (
+			"input_message_content" in params.result &&
+			params.result.input_message_content !== undefined &&
+			"message_text" in params.result.input_message_content &&
+			isFormattableString(
+				params.result.input_message_content.message_text,
+			)
+		) {
+			params.result.input_message_content.entities =
+				params.result.input_message_content.message_text.entities;
+			params.result.input_message_content.message_text =
+				params.result.input_message_content.message_text.text;
 		}
 		return params;
 	},
