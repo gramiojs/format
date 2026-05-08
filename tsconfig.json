@@ -15,7 +15,6 @@
 		"emitDeclarationOnly": true,
 		"allowImportingTsExtensions": true,
 		"composite": true,
-		"baseUrl": "./src",
 		"outDir": "./dist"
 	},
 	"include": ["src", "tests"]
